@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zain Jaafil</title>
+<meta name="description" content="Zain Jaafil builds voice AI, internal dashboards, and automation that businesses actually run on.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF9F5;
+  --paper-2:#F3F0E8;
+  --ink:#14130F;
+  --ink-2:#3A382F;
+  --muted:#6E6A5C;
+  --faint:#9C9788;
+  --rule:#D8D2C4;
+  --rule-2:#E7E2D6;
+  --accent:#A32D18;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:18px;line-height:1.55;
+  font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 34px}
+
+/* ---------------- masthead ---------------- */
+.masthead{padding:26px 0 0}
+.dateline{
+  display:flex;gap:18px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:12px;border-bottom:1px solid var(--ink);
+}
+.dateline .sp{margin-left:auto}
+h1{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(3.8rem,13.5vw,10.5rem);line-height:.84;letter-spacing:-.035em;
+  margin:.14em 0 .1em;font-variation-settings:"SOFT" 0,"WONK" 1;
+}
+h1 .b{display:block}
+h1 .it{font-style:italic;font-weight:400}
+.rule-heavy{border:0;border-top:1px solid var(--ink);margin:0}
+.rule-hair{border:0;border-top:1px solid var(--rule);margin:0}
+
+.standfirst{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:56px;padding:26px 0 44px;
+}
+.lede{font-size:25px;line-height:1.34;margin:0 0 18px;max-width:22ch;font-weight:400}
+.lede em{font-style:italic}
+.sub{margin:0;color:var(--ink-2);max-width:48ch;font-size:17.5px}
+.sub + .sub{margin-top:12px}
+.vitals{font-family:var(--mono);font-size:11.5px;line-height:1.5;padding-top:7px}
+.vitals dl{margin:0}
+.vitals dt{color:var(--faint);text-transform:uppercase;letter-spacing:.1em;font-size:10px;margin-top:15px}
+.vitals dt:first-child{margin-top:0}
+.vitals dd{margin:3px 0 0;color:var(--ink)}
+.vitals dd span{display:block;color:var(--muted)}
+
+/* ---------------- section furniture ---------------- */
+.sec{padding:52px 0 0}
+.sec-rule{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--ink);padding-bottom:9px}
+.numeral{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+.sec-rule h2{
+  font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.01em;margin:0;
+}
+.sec-rule .kicker{
+  margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ---------------- fig 1 : the chart ---------------- */
+.figbar{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:20px 0 14px;
+}
+.figno{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.figcap{font-style:italic;font-size:16px;color:var(--ink-2)}
+.readout{
+  margin-left:auto;display:flex;align-items:baseline;gap:20px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;
+}
+.readout .ro-date{
+  font-size:13px;color:var(--ink);border-bottom:2px solid var(--ink);padding-bottom:1px;
+  min-width:9.5ch;text-align:center;
+}
+.readout b{font-weight:500;font-variant-numeric:tabular-nums}
+.readout .dead b{color:var(--accent)}
+
+.chart{position:relative;padding:8px 0 0;touch-action:pan-y;cursor:ew-resize;user-select:none}
+.chart:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+.axis{position:relative;height:17px;margin-left:var(--gut);border-bottom:1px solid var(--rule)}
+.tick{position:absolute;top:0;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.08em}
+.tick i{position:absolute;left:50%;top:15px;width:1px;height:6px;background:var(--rule)}
+
+.rows{position:relative;padding:9px 0 4px}
+.row{display:grid;grid-template-columns:var(--gut) 1fr;align-items:center;height:27px}
+.row-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:.01em;color:var(--faint);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;
+  transition:color .18s ease;
+}
+.row.on .row-label{color:var(--ink)}
+.row.gone .row-label{color:var(--muted)}
+.row-track{position:relative;height:100%}
+.bar{
+  position:absolute;top:50%;transform:translateY(-50%);height:9px;
+  background:var(--ink);border-radius:1px;
+}
+.row.gone .bar{
+  background:transparent;border:1px solid var(--accent);height:9px;
+  background-image:repeating-linear-gradient(45deg,var(--accent) 0 1px,transparent 1px 4px);
+  opacity:.75;
+}
+.bar .cap{
+  position:absolute;right:-1px;top:50%;width:1px;height:15px;
+  transform:translate(0,-50%);background:var(--accent);
+}
+.row.gone .bar .cap{width:7px;height:7px;background:none;right:-4px;
+  border-left:1px solid var(--accent);border-top:1px solid var(--accent);
+  transform:translate(0,-50%) rotate(45deg);}
+.moment{
+  position:absolute;top:50%;width:9px;height:9px;margin-left:-4.5px;
+  transform:translateY(-50%) rotate(45deg);background:var(--accent);
+}
+.row-moment .row-label{color:var(--accent)}
+.row.hit{background:var(--paper-2)}
+.row.hit .row-label{color:var(--ink)}
+
+.playhead{position:absolute;top:0;bottom:0;width:1px;background:var(--ink);pointer-events:none}
+.playhead::before{
+  content:"";position:absolute;top:-5px;left:-4px;
+  border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:6px solid var(--ink);
+}
+.chart-foot{
+  display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;
+  padding:12px 0 0;margin-left:var(--gut);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+}
+.legend{display:flex;gap:16px}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:16px;height:8px;background:var(--ink);border-radius:1px}
+.sw.dead{background:transparent;border:1px solid var(--accent);
+  background-image:repeating-linear-gradient(45deg,var(--accent) 0 1px,transparent 1px 4px)}
+.sw.mo{width:8px;height:8px;transform:rotate(45deg);background:var(--accent)}
+.hint{margin-left:auto;color:var(--accent);letter-spacing:.1em}
+
+/* detail panel */
+.detail{
+  margin-top:22px;border-top:1px solid var(--ink);padding-top:16px;
+  display:grid;grid-template-columns:var(--gut) 1fr;gap:0;
+}
+.detail-meta{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--muted);padding-right:16px}
+.detail-meta b{display:block;color:var(--ink);font-weight:500;letter-spacing:.04em}
+.detail-body h3{font-family:var(--display);font-weight:500;font-size:23px;margin:0 0 8px;letter-spacing:-.01em}
+.detail-body p{margin:0 0 11px;max-width:62ch;color:var(--ink-2);font-size:17px}
+.detail-body p:last-child{margin-bottom:0}
+.detail-body .cause{font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.02em}
+.stack{display:flex;flex-wrap:wrap;gap:5px;list-style:none;margin:12px 0 0;padding:0}
+.stack li{font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--rule);padding:2px 7px}
+
+/* ---------------- selected work ---------------- */
+.work{padding:26px 0 8px;display:grid;gap:0}
+.piece{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr);gap:52px;
+  padding:30px 0;border-top:1px solid var(--rule-2)}
+.piece:first-child{border-top:none}
+.piece-side{font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--muted)}
+.piece-side .org{color:var(--ink);letter-spacing:.04em}
+.piece-side .st{display:inline-block;margin-top:8px;letter-spacing:.12em;text-transform:uppercase;font-size:10px}
+.piece-side .st.live{color:var(--ink);border-bottom:2px solid var(--ink);padding-bottom:1px}
+.piece-side .st.dead{color:var(--accent);border-bottom:1px dashed var(--accent);padding-bottom:1px}
+.piece h3{font-family:var(--display);font-weight:500;font-size:31px;line-height:1.06;
+  letter-spacing:-.02em;margin:0 0 12px}
+.piece p{margin:0 0 13px;color:var(--ink-2);max-width:60ch}
+.piece p:last-of-type{margin-bottom:0}
+.dropcap::first-letter{
+  font-family:var(--display);font-weight:600;float:left;font-size:3.05em;line-height:.78;
+  padding:.06em .09em 0 0;color:var(--ink);
+}
+
+/* ---------------- signal ---------------- */
+.signal{padding:22px 0 8px}
+.sig{display:grid;grid-template-columns:var(--gut) 1fr;gap:0;padding:17px 0;border-top:1px solid var(--rule-2)}
+.sig:first-child{border-top:none}
+.sig-yr{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.06em}
+.sig h3{font-family:var(--body);font-weight:600;font-size:18px;margin:0 0 4px}
+.sig p{margin:0;color:var(--muted);max-width:62ch;font-size:16.5px}
+
+/* ---------------- colophon ---------------- */
+footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
+.colophon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px}
+.col h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin:0 0 12px;font-weight:400}
+.col p{margin:0;color:var(--ink-2);font-size:16.5px;max-width:36ch}
+.contact{display:flex;flex-direction:column;gap:7px;font-family:var(--mono);font-size:13px}
+.contact a{text-decoration:none;width:fit-content;border-bottom:1px solid var(--rule);
+  padding-bottom:2px;transition:border-color .15s ease,color .15s ease}
+.contact a:hover{border-color:var(--accent);color:var(--accent)}
+.quote{margin:0;font-size:21px;line-height:1.3;font-style:italic;letter-spacing:-.01em}
+.quote cite{display:block;font:400 10.5px/1.6 var(--mono);font-style:normal;
+  color:var(--faint);margin-top:11px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------------- responsive ---------------- */
+.chart,.detail,.rows,.axis,.sig{--gut:186px}
+@media (max-width:900px){
+  body{font-size:17px}
+  .wrap{padding:0 20px}
+  .standfirst,.piece,.colophon{grid-template-columns:1fr;gap:24px}
+  .chart,.detail,.rows,.axis,.sig{--gut:104px}
+  .row-label{font-size:9.5px}
+  .detail{grid-template-columns:1fr}
+  .detail-meta{padding:0 0 12px}
+  .readout{margin-left:0;width:100%;gap:14px}
+  .colophon{gap:30px}
+  .lede{font-size:22px;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="dateline">
+      <span>Tustin, California</span>
+      <span>Builder, 17</span>
+      <span class="sp" id="today"></span>
+    </div>
+
+    <h1><span class="b">Zain</span><span class="b it">Jaafil</span></h1>
+    <hr class="rule-heavy">
+
+    <div class="standfirst">
+      <div>
+        <p class="lede">I build software that other people's businesses <em>actually run on.</em></p>
+        <p class="sub">Voice agents, internal dashboards, automation. Two of the systems I built handle live sales calls for a payments company right now, on a server I set up myself.</p>
+        <p class="sub">Before any of that I spent a summer cold calling auto shops and nail salons across Orange County trying to sell them websites. Some of it worked.</p>
+      </div>
+      <div class="vitals">
+        <dl>
+          <dt>School</dt>
+          <dd>Legacy Magnet Academy, 12th<span>Dual enrolled at IVC since 9th</span></dd>
+          <dt>Currently</dt>
+          <dd>AI product intern, Vitalis<span>Business ops intern, local gym</span></dd>
+          <dt>Off the clock</dt>
+          <dd>UPSL semi-pro soccer<span>Head coach, U6 to U8</span></dd>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ I. THE CHART ============ -->
+  <section class="sec">
+    <div class="sec-rule">
+      <span class="numeral">I</span>
+      <h2>A working history</h2>
+      <span class="kicker">Drag to scrub</span>
+    </div>
+
+    <div class="figbar">
+      <span class="figno">Fig. 1</span>
+      <span class="figcap">Everything I started, and what happened to it.</span>
+      <span class="readout">
+        <span class="ro-date" id="roDate">JUN 2023</span>
+        <span><b id="roLive">0</b> running</span>
+        <span class="dead"><b id="roDead">0</b> dead</span>
+      </span>
+    </div>
+
+    <div class="chart" id="chart" tabindex="0" role="slider"
+         aria-label="Timeline scrubber" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="axis" id="axis"></div>
+      <div class="rows" id="rows"></div>
+      <div class="playhead" id="playhead"></div>
+    </div>
+
+    <div class="chart-foot">
+      <div class="legend">
+        <span><i class="sw"></i> Running</span>
+        <span><i class="sw dead"></i> Dead</span>
+        <span><i class="sw mo"></i> Moment</span>
+      </div>
+      <span class="hint">Click any row for the story</span>
+    </div>
+
+    <div class="detail" id="detail"></div>
+  </section>
+
+  <!-- ============ II. SELECTED WORK ============ -->
+  <section class="sec">
+    <div class="sec-rule">
+      <span class="numeral">II</span>
+      <h2>Selected work</h2>
+      <span class="kicker">Longer form</span>
+    </div>
+
+    <div class="work">
+
+      <article class="piece">
+        <div class="piece-side">
+          <div class="org">Vitalis Corp</div>
+          <div>2026 to present</div>
+          <div>aisales.shift4tech.com</div>
+          <span class="st live">Live</span>
+        </div>
+        <div>
+          <h3>An AI rep that calls small businesses and hands them to a human</h3>
+          <p class="dropcap">Alex calls a restaurant owner about their payment terminal, works out whether they are worth a rep's time, and then does the part most voice bots skip: it asks permission, puts the caller on hold with music, dials a real salesperson, whispers a summary of the conversation into their ear, and bridges the two of them together.</p>
+          <p>It replaced a stack built on Vapi, which took the per minute platform fee to zero. It runs on the client's own EC2 box under systemd rather than a third party voice platform, so nothing about it depends on a vendor staying cheap.</p>
+          <p>The model itself remembers nothing between calls. Every session starts blank. What looks like memory is a one paragraph summary the model writes about itself at the end of each call, stored in SQLite and fed back in at the start of the next one. That was deliberate. Feeding whole transcripts back would bloat every call, and keeping it in my own database means resetting someone's history is one line of SQL instead of a support ticket.</p>
+          <ul class="stack"><li>Twilio</li><li>OpenAI Realtime</li><li>Pipecat</li><li>FastAPI</li><li>SQLite</li><li>nginx</li><li>EC2</li></ul>
+        </div>
+      </article>
+
+      <article class="piece">
+        <div class="piece-side">
+          <div class="org">Vitalis Corp</div>
+          <div>2026</div>
+          <div>Windows desktop</div>
+          <span class="st dead">Shelved</span>
+        </div>
+        <div>
+          <h3>A tray app that listened to sales calls and fed the rep their next line</h3>
+          <p class="dropcap">Call Assist sat in a rep's system tray and captured two audio streams at once: their microphone, and the customer's voice coming back through system audio. Both went out for live transcription. The moment it heard the word contract, or too expensive, it popped the matching rebuttal card on screen. It tracked what the customer complained about across the call and assembled a closing script as it went.</p>
+          <p>The best thing I did on it was notice a mistake I had already made. The transcription API key was hardcoded in the app, which meant it was going to ship inside every copy installed on every rep's laptop, extractable by anyone who looked. I moved the entire audio connection server side so the key never left the server, and put auth on both endpoints so nobody could run up the client's bill.</p>
+          <p class="cause">Cause of death: the client took the work in house. One audio bug was never confirmed fixed.</p>
+          <ul class="stack"><li>Electron</li><li>Node</li><li>WebSockets</li><li>Deepgram</li><li>Web Audio</li><li>pm2</li></ul>
+        </div>
+      </article>
+
+      <article class="piece">
+        <div class="piece-side">
+          <div class="org">Local gym</div>
+          <div>2026 to present</div>
+          <div>On the floor</div>
+          <span class="st live">Live</span>
+        </div>
+        <div>
+          <h3>A dashboard nobody asked me to build</h3>
+          <p class="dropcap">I was hired to work the front desk, call leads off Meta ads, and help with marketing. Two hundred calls in, I noticed the gym had TVs on the wall showing nothing. So I built a live floor display: check ins, streaks, goal progress, the class schedule, member shoutouts. Then I pitched it to the owner.</p>
+          <p>He is buying more TVs to put it on.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ III. SIGNAL ============ -->
+  <section class="sec">
+    <div class="sec-rule">
+      <span class="numeral">III</span>
+      <h2>Rooms I talked my way into</h2>
+    </div>
+    <div class="signal">
+      <div class="sig">
+        <div class="sig-yr">2026</div>
+        <div>
+          <h3>First place, Berkeley Haas Student Association Pitch Competition</h3>
+          <p>Led a team of five to first out of thirty teams in front of a three judge panel. Everyone else competing was in college. I owned the product concept, the deck, and the pitch itself.</p>
+        </div>
+      </div>
+      <div class="sig">
+        <div class="sig-yr">2026</div>
+        <div>
+          <h3>Round one winner, Mott Million Dollar Challenge</h3>
+          <p>One of 1,500 selected out of more than 3,700 submissions nationally. I co created the concept and presented on camera: AI glasses that help blind users get around.</p>
+        </div>
+      </div>
+      <div class="sig">
+        <div class="sig-yr">2025</div>
+        <div>
+          <h3>OC Maker Showcase</h3>
+          <p>Team of three, concept through final pitch. I did the SolidWorks design work and delivered to the judges.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap colophon">
+    <div class="col">
+      <h4>Get in touch</h4>
+      <div class="contact">
+        <a href="mailto:TODO@zainjaafil.com">TODO@zainjaafil.com</a>
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+    <div class="col">
+      <h4>Off the clock</h4>
+      <p>Semi pro soccer in the UPSL, seven hours of training a week. I also head coach a team of six and seven year olds, which is harder.</p>
+    </div>
+    <div class="col">
+      <h4>Operating principle</h4>
+      <blockquote class="quote">
+        As long as I'm alive, there's infinite chances.
+        <cite>My uncle showed me this when I was ten</cite>
+      </blockquote>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- TODO: dates marked ~ are my guesses. Correct them. ---- */
+  var ITEMS=[
+    {n:"Dual enrollment, IVC", s:"2023-08", e:null, k:"life",
+     t:"Started taking college classes at Irvine Valley College in ninth grade",
+     d:["My school runs an entrepreneurship magnet curriculum and offers no AP classes, so college courses were the only way up. I have been enrolled there alongside high school ever since."]},
+
+    {n:"Reselling", s:"2024-03", e:"2024-11", k:"venture",
+     t:"Buying and flipping, badly at first",
+     d:["The first thing I ever tried. No plan, no margin calculation, no repeat customers. It taught me marketing on somebody else's dime, which turned out to be the point."],
+     c:"Cause of death: no margin, no repeat business."},
+
+    {n:"Custom tee printing", s:"2024-07", e:"2025-01", k:"venture",
+     t:"A printing business that never printed much",
+     d:["Same era, same lesson. I was trying things at random to find out which part of building a business I actually liked. It turned out to be the selling."],
+     c:"Cause of death: no demand I did not have to manufacture myself."},
+
+    {n:"Mr. Guy Invests", s:"2025-04", e:null, k:"venture",
+     t:"A Duolingo style platform for learning to invest",
+     d:["I taught myself to trade off YouTube over about a year, then built the thing I wanted while learning: short lessons that walk a beginner through the basics instead of one long article nobody finishes.",
+        "About 50 users on the site and roughly 200 followers across TikTok and Instagram."]},
+
+    {n:"OC Maker Showcase", s:"2025-05", e:"2025-05", k:"moment",
+     t:"OC Maker Showcase",
+     d:["Team of three, concept through final pitch. I owned the SolidWorks design work and delivered to the judges."]},
+
+    {n:"Alpaca stock bot", s:"2026-03", e:"2026-08", k:"system",
+     t:"An automated trading bot that lost money for months",
+     d:["It ran live on a VPS and finished down 10.5 percent. I tore the whole thing out, VPS included, instead of patching a strategy that was wrong at the root. It is being rebuilt now as a machine learning system rather than a pile of rules."],
+     c:"Cause of death: down 10.5%. Torn out August 2026."},
+
+    {n:"Vitalis internship", s:"2026-02", e:null, k:"life",
+     t:"AI product development intern, Vitalis Corp",
+     d:["A company reselling SkyTab payment systems. I have shipped two production systems for them, one of which is still taking live calls."]},
+
+    {n:"Call Assist", s:"2026-02", e:"2026-06", k:"system",
+     t:"Live call assistant for sales reps",
+     d:["An Electron app in the system tray that captured the rep and the customer at once, transcribed both live, and popped the matching rebuttal card the second it heard an objection.",
+        "I caught that the transcription key was hardcoded into the app, which meant it would ship inside every installed copy. Moved the whole audio path server side."],
+     c:"Cause of death: client took the work in house.",
+     st:["Electron","Node","Deepgram","WebSockets","pm2"]},
+
+    {n:"Alex, the AI rep", s:"2026-04", e:null, k:"system",
+     t:"An AI sales rep that transfers to a human mid call",
+     d:["Calls small businesses about their payment setup, qualifies them, then asks permission and bridges them to a real rep, whispering a summary to that rep before they join.",
+        "Replaced a Vapi based stack, taking the per minute platform fee to zero. Self hosted on the client's own EC2 box."],
+     st:["Twilio","OpenAI Realtime","Pipecat","FastAPI","SQLite","EC2"]},
+
+    {n:"PowerScale", s:"2026-05", e:null, k:"venture",
+     t:"A short form channel and the pipeline behind it",
+     d:["I write, produce, and publish it on tooling I built. The hard problem is not the videos, it is distribution: working out why a video does or does not reach the feed, and what actually holds a viewer through the first half second."]},
+
+    {n:"Crypto bot", s:"2026-05", e:"2026-08", k:"system",
+     t:"A crypto trading bot",
+     d:["It backtested beautifully and lost money live. The distance between those two sentences is the whole lesson, and the lesson is that short holding periods are a fee machine, not a strategy."],
+     c:"Cause of death: deleted August 2026. Not rebuilt."},
+
+    {n:"OC Web Design", s:"2026-06", e:"2026-07", k:"venture",
+     t:"Cold calling businesses with no website",
+     d:["I found local businesses with no website and called the owners to build them one. Six hundred up front, eighty a month after. I learned to ask for the owner by name, call between eight and ten on a weekday, and to stop pushing the moment somebody says word of mouth is working.",
+        "Ninety businesses sourced, twenty seven calls made, five warm."],
+     c:"Paused, not dead. The warm leads are still sitting there."},
+
+    {n:"Lead finder", s:"2026-06", e:null, k:"system",
+     t:"An agent that finds businesses with no website",
+     d:["A scheduled agent that scans Google Maps for businesses with no site, verifies each against a web search so a Yelp page does not count as one, and returns ten leads it has never surfaced before.",
+        "The first version took over thirty minutes a run because it opened every listing one at a time. Reading the whole results page at once fixed it."]},
+
+    {n:"Gym floor dashboard", s:"2026-06", e:null, k:"system",
+     t:"A live dashboard on the gym wall",
+     d:["Check ins, streaks, goal progress, class schedule, member shoutouts. I was hired for the front desk and built it anyway, then pitched it to the owner.",
+        "He is buying more TVs to put it on."]},
+
+    {n:"Haas pitch, 1st", s:"2026-06", e:"2026-06", k:"moment",
+     t:"First place, Berkeley Haas pitch competition",
+     d:["Led five people to first out of thirty teams. Everyone else in the room was in college."]},
+
+    {n:"Living Art", s:"2026-07", e:null, k:"system",
+     t:"A painting gallery that runs the living room TV",
+     d:["A Raspberry Pi cycles real paintings on the TV and wakes the set over HDMI CEC on a schedule, so it turns itself on in the morning and off at night without anyone finding a remote."],
+     st:["Raspberry Pi","Python","HDMI-CEC","systemd"]},
+
+    {n:"Jarvis", s:"2026-07", e:null, k:"system",
+     t:"An always on voice assistant on a Pi",
+     d:["Wake word runs locally, speech goes out to be transcribed, Claude answers, and it talks back through a Bluetooth speaker. The genuinely annoying part was audio: Bluetooth ships RF killed on a fresh Pi image, and the speaker drops its pairing on every reboot."],
+     st:["Raspberry Pi","Python","Claude API","PipeWire"]}
+  ];
+
+  var T0=Date.parse("2023-06-01"), T1=Date.parse("2026-11-01"), NOW=Date.parse("2026-09-10");
+  function ms(d){ return Date.parse(d+"-01"); }
+  function pct(t){ return (t-T0)/(T1-T0)*100; }
+  var MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+  var chart=document.getElementById("chart"),
+      rowsEl=document.getElementById("rows"),
+      axisEl=document.getElementById("axis"),
+      headEl=document.getElementById("playhead"),
+      detEl=document.getElementById("detail"),
+      roDate=document.getElementById("roDate"),
+      roLive=document.getElementById("roLive"),
+      roDead=document.getElementById("roDead");
+
+  /* axis */
+  [2023,2024,2025,2026].forEach(function(y){
+    var t=document.createElement("div");
+    t.className="tick"; t.style.left=pct(Date.parse(y+"-01-01"))+"%";
+    t.innerHTML=y+'<i></i>';
+    if(pct(Date.parse(y+"-01-01"))>=0) axisEl.appendChild(t);
+  });
+
+  /* rows */
+  var built=ITEMS.map(function(it,i){
+    var row=document.createElement("div");
+    row.className="row"+(it.k==="moment"?" row-moment":"");
+    row.innerHTML='<div class="row-label">'+it.n+'</div><div class="row-track"></div>';
+    var track=row.lastChild, el;
+    if(it.k==="moment"){
+      el=document.createElement("div"); el.className="moment";
+      el.style.left=pct(ms(it.s))+"%";
+    }else{
+      el=document.createElement("div"); el.className="bar";
+      el.innerHTML='<i class="cap"></i>';
+      el.style.left=pct(ms(it.s))+"%";
+    }
+    track.appendChild(el);
+    row.addEventListener("click",function(){ select(i); });
+    rowsEl.appendChild(row);
+    return {row:row,el:el,it:it,s:pct(ms(it.s)),e:pct(it.e?ms(it.e):NOW),dead:!!it.e&&it.k!=="moment"};
+  });
+
+  function render(p){
+    var live=0,dead=0;
+    built.forEach(function(b){
+      var started=p>=b.s;
+      b.row.classList.toggle("on",started);
+      if(b.it.k==="moment"){
+        b.el.style.opacity=started?1:0;
+        return;
+      }
+      var w=Math.max(0,Math.min(b.e,p)-b.s);
+      b.el.style.width=w+"%";
+      b.el.style.opacity=started?1:0;
+      var isDead=b.dead&&p>=b.e;
+      b.row.classList.toggle("gone",isDead);
+      if(started){ isDead?dead++:live++; }
+    });
+    headEl.style.left="calc("+getGut()+"px + (100% - "+getGut()+"px) * "+(p/100)+")";
+    var t=T0+(T1-T0)*(p/100), d=new Date(t);
+    roDate.textContent=MON[d.getUTCMonth()]+" "+d.getUTCFullYear();
+    roLive.textContent=live; roDead.textContent=dead;
+    chart.setAttribute("aria-valuenow",Math.round(p));
+    chart.setAttribute("aria-valuetext",roDate.textContent+", "+live+" running, "+dead+" dead");
+  }
+
+  function getGut(){
+    return parseFloat(getComputedStyle(chart).getPropertyValue("--gut"))||186;
+  }
+
+  /* detail panel */
+  var sel=-1;
+  function select(i){
+    if(sel>=0) built[sel].row.classList.remove("hit");
+    sel=i; built[i].row.classList.add("hit");
+    var it=ITEMS[i];
+    var when=fmt(it.s)+(it.k==="moment"?"":" to "+(it.e?fmt(it.e):"now"));
+    var html='<div class="detail-meta"><b>'+it.n+'</b>'+when+'</div><div class="detail-body">';
+    html+='<h3>'+it.t+'</h3>';
+    it.d.forEach(function(p){ html+='<p>'+p+'</p>'; });
+    if(it.c) html+='<p class="cause">'+it.c+'</p>';
+    if(it.st){ html+='<ul class="stack">'+it.st.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>'; }
+    detEl.innerHTML=html+'</div>';
+  }
+  function fmt(d){ var p=d.split("-"); return MON[+p[1]-1]+" "+p[0]; }
+
+  /* drag */
+  var dragging=false;
+  function posFromX(x){
+    var r=chart.getBoundingClientRect(), g=getGut();
+    return Math.max(0,Math.min(100,(x-r.left-g)/(r.width-g)*100));
+  }
+  chart.addEventListener("pointerdown",function(e){
+    dragging=true; chart.setPointerCapture(e.pointerId); stop(); render(posFromX(e.clientX));
+  });
+  chart.addEventListener("pointermove",function(e){
+    if(dragging) render(posFromX(e.clientX));
+  });
+  chart.addEventListener("pointerup",function(){ dragging=false; });
+  chart.addEventListener("pointercancel",function(){ dragging=false; });
+  chart.addEventListener("keydown",function(e){
+    var cur=parseFloat(chart.getAttribute("aria-valuenow"))||0, step=e.shiftKey?10:2;
+    if(e.key==="ArrowRight"){ stop(); render(Math.min(100,cur+step)); e.preventDefault(); }
+    if(e.key==="ArrowLeft"){ stop(); render(Math.max(0,cur-step)); e.preventDefault(); }
+    if(e.key==="Home"){ stop(); render(0); e.preventDefault(); }
+    if(e.key==="End"){ stop(); render(pct(NOW)); e.preventDefault(); }
+  });
+
+  /* auto sweep on first view */
+  var raf=null;
+  function stop(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
+  function sweep(){
+    var target=pct(NOW), t0=performance.now(), dur=2600;
+    (function step(now){
+      var k=Math.min(1,(now-t0)/dur);
+      render(target*(1-Math.pow(1-k,3)));
+      if(k<1) raf=requestAnimationFrame(step); else raf=null;
+    })(t0);
+  }
+
+  render(0);
+  select(8);
+
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){ render(pct(NOW)); }
+  else if("IntersectionObserver" in window){
+    var seen=false;
+    new IntersectionObserver(function(en,ob){
+      if(en[0].isIntersecting&&!seen){ seen=true; sweep(); ob.disconnect(); }
+    },{threshold:.35}).observe(chart);
+  } else { render(pct(NOW)); }
+
+  window.addEventListener("resize",function(){
+    render(parseFloat(chart.getAttribute("aria-valuenow"))||0);
+  });
+
+  /* dateline */
+  document.getElementById("today").textContent=new Date().toLocaleDateString("en-US",
+    {month:"long",day:"numeric",year:"numeric"});
+})();
+</script>
+
+</body>
+</html>
