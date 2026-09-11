@@ -156,9 +156,14 @@ h1 .it{font-style:italic;font-weight:400}
 .hint{margin-left:auto;color:var(--accent);letter-spacing:.1em}
 
 /* detail panel */
-.detail{
-  margin-top:22px;border-top:1px solid var(--ink);padding-top:16px;
-  display:grid;grid-template-columns:var(--gut) 1fr;gap:0;
+.detail{margin-top:22px;border-top:1px solid var(--ink);padding-top:4px}
+.entry{display:grid;grid-template-columns:var(--gut) 1fr;gap:0;padding:20px 0;border-top:1px solid var(--rule-2)}
+.entry:first-child{border-top:none}
+.backlink{margin:14px 0 0}
+.backlink .showall{
+  font:400 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:none;border:0;border-bottom:1px solid var(--accent);
+  padding:0 0 3px;cursor:pointer;
 }
 .detail-meta{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--muted);padding-right:16px}
 .detail-meta b{display:block;color:var(--ink);font-weight:500;letter-spacing:.04em}
@@ -211,14 +216,14 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
   color:var(--faint);margin-top:11px;letter-spacing:.06em;text-transform:uppercase}
 
 /* ---------------- responsive ---------------- */
-.chart,.detail,.rows,.axis,.sig{--gut:186px}
+.chart,.detail,.entry,.rows,.axis,.sig{--gut:186px}
 @media (max-width:900px){
   body{font-size:17px}
   .wrap{padding:0 20px}
   .standfirst,.piece,.colophon{grid-template-columns:1fr;gap:24px}
-  .chart,.detail,.rows,.axis,.sig{--gut:104px}
+  .chart,.detail,.entry,.rows,.axis,.sig{--gut:104px}
   .row-label{font-size:9.5px}
-  .detail{grid-template-columns:1fr}
+  .entry{grid-template-columns:1fr}
   .detail-meta{padding:0 0 12px}
   .readout{margin-left:0;width:100%;gap:14px}
   .colophon{gap:30px}
@@ -300,7 +305,7 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
   <section class="sec">
     <div class="sec-rule">
       <span class="numeral">II</span>
-      <h2>Selected work</h2>
+      <h2>Three of them in depth</h2>
       <span class="kicker">Longer form</span>
     </div>
 
@@ -325,15 +330,14 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
       <article class="piece">
         <div class="piece-side">
           <div class="org">Vitalis Corp</div>
-          <div>2026</div>
+          <div>2026 to present</div>
           <div>Windows desktop</div>
-          <span class="st dead">Shelved</span>
+          <span class="st live">Live</span>
         </div>
         <div>
-          <h3>A tray app that listened to sales calls and fed the rep their next line</h3>
-          <p class="dropcap">Call Assist sat in a rep's system tray and captured two audio streams at once: their microphone, and the customer's voice coming back through system audio. Both went out for live transcription. The moment it heard the word contract, or too expensive, it popped the matching rebuttal card on screen. It tracked what the customer complained about across the call and assembled a closing script as it went.</p>
-          <p>The best thing I did on it was notice a mistake I had already made. The transcription API key was hardcoded in the app, which meant it was going to ship inside every copy installed on every rep's laptop, extractable by anyone who looked. I moved the entire audio connection server side so the key never left the server, and put auth on both endpoints so nobody could run up the client's bill.</p>
-          <p class="cause">Cause of death: the client took the work in house. One audio bug was never confirmed fixed.</p>
+          <h3>A tray app that listens to sales calls and feeds the rep their next line</h3>
+          <p class="dropcap">Call Assist sits in a rep's system tray and captures two audio streams at once: their microphone, and the customer's voice coming back through system audio. Both go out for live transcription. The moment it hears the word contract, or too expensive, it pops the matching rebuttal card on screen. It tracks what the customer complains about across the call and assembles a closing script as it goes.</p>
+          <p>The best thing I did on it was notice a mistake I had already made. The transcription API key was hardcoded in the app, which meant it was going to ship inside every copy installed on every rep's laptop, extractable by anyone who looked. I moved the entire audio connection server side so the key never leaves the server, and put auth on both endpoints so nobody could run up the client's bill.</p>
           <ul class="stack"><li>Electron</li><li>Node</li><li>WebSockets</li><li>Deepgram</li><li>Web Audio</li><li>pm2</li></ul>
         </div>
       </article>
@@ -393,9 +397,9 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
     <div class="col">
       <h4>Get in touch</h4>
       <div class="contact">
-        <a href="mailto:TODO@zainjaafil.com">TODO@zainjaafil.com</a>
-        <a href="#">GitHub</a>
-        <a href="#">LinkedIn</a>
+        <a href="mailto:zainjaafil@gmail.com">zainjaafil@gmail.com</a>
+        <a href="https://github.com/waverave77-bit" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/zain-jaafil/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </div>
     <div class="col">
@@ -416,7 +420,7 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
 (function(){
   "use strict";
 
-  /* ---- TODO: dates marked ~ are my guesses. Correct them. ---- */
+  /* Timeline data. Dates are month precision. */
   var ITEMS=[
     {n:"Dual enrollment, IVC", s:"2023-08", e:null, k:"life",
      t:"Started taking college classes at Irvine Valley College in ninth grade",
@@ -441,20 +445,25 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
      t:"OC Maker Showcase",
      d:["Team of three, concept through final pitch. I owned the SolidWorks design work and delivered to the judges."]},
 
-    {n:"Alpaca stock bot", s:"2026-03", e:"2026-08", k:"system",
-     t:"An automated trading bot that lost money for months",
-     d:["It ran live on a VPS and finished down 10.5 percent. I tore the whole thing out, VPS included, instead of patching a strategy that was wrong at the root. It is being rebuilt now as a machine learning system rather than a pile of rules."],
-     c:"Cause of death: down 10.5%. Torn out August 2026."},
+    {n:"Alpaca stock bot", s:"2026-03", e:null, k:"system",
+     t:"An automated trading bot, on its second architecture",
+     d:["The first version ran live on a VPS and finished down 10.5 percent. Rather than patch a strategy that was wrong at the root, I tore the whole thing out, VPS included, and started again.",
+        "It is being rebuilt now as a machine learning system instead of a pile of hand written rules."],
+     st:["Python","Alpaca API"]},
+
+    {n:"Mott Challenge", s:"2026-03", e:"2026-03", k:"moment",
+     t:"Round one winner, Mott Million Dollar Challenge",
+     d:["A national competition. One of 1,500 selected out of more than 3,700 submissions, from a field of over 5,300 K-12 students.",
+        "I co created the concept and was the on camera presenter for the sixty second pitch: AI powered glasses that help blind users navigate. It took a $250 prize."]},
 
     {n:"Vitalis internship", s:"2026-02", e:null, k:"life",
      t:"AI product development intern, Vitalis Corp",
      d:["A company reselling SkyTab payment systems. I have shipped two production systems for them, one of which is still taking live calls."]},
 
-    {n:"Call Assist", s:"2026-02", e:"2026-06", k:"system",
+    {n:"Call Assist", s:"2026-02", e:null, k:"system",
      t:"Live call assistant for sales reps",
-     d:["An Electron app in the system tray that captured the rep and the customer at once, transcribed both live, and popped the matching rebuttal card the second it heard an objection.",
-        "I caught that the transcription key was hardcoded into the app, which meant it would ship inside every installed copy. Moved the whole audio path server side."],
-     c:"Cause of death: client took the work in house.",
+     d:["An Electron app in the system tray that captures the rep and the customer at once, transcribes both live, and pops the matching rebuttal card the second it hears an objection. It tracks what the customer complains about and assembles a closing script as the call goes.",
+        "I caught that the transcription key was hardcoded into the app, which meant it would ship inside every installed copy on every rep's laptop. Moved the whole audio path server side so the key never leaves the server."],
      st:["Electron","Node","Deepgram","WebSockets","pm2"]},
 
     {n:"Alex, the AI rep", s:"2026-04", e:null, k:"system",
@@ -472,11 +481,10 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
      d:["It backtested beautifully and lost money live. The distance between those two sentences is the whole lesson, and the lesson is that short holding periods are a fee machine, not a strategy."],
      c:"Cause of death: deleted August 2026. Not rebuilt."},
 
-    {n:"OC Web Design", s:"2026-06", e:"2026-07", k:"venture",
+    {n:"OC Web Design", s:"2026-06", e:null, k:"venture",
      t:"Cold calling businesses with no website",
-     d:["I found local businesses with no website and called the owners to build them one. Six hundred up front, eighty a month after. I learned to ask for the owner by name, call between eight and ten on a weekday, and to stop pushing the moment somebody says word of mouth is working.",
-        "Ninety businesses sourced, twenty seven calls made, five warm."],
-     c:"Paused, not dead. The warm leads are still sitting there."},
+     d:["I find local businesses with no website and call the owners to build them one. Six hundred up front, eighty a month after. I learned to ask for the owner by name, call between eight and ten on a weekday, and to stop pushing the moment somebody says word of mouth is working.",
+        "Ninety businesses sourced so far, twenty seven calls made, five warm."]},
 
     {n:"Lead finder", s:"2026-06", e:null, k:"system",
      t:"An agent that finds businesses with no website",
@@ -529,6 +537,7 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
   var built=ITEMS.map(function(it,i){
     var row=document.createElement("div");
     row.className="row"+(it.k==="moment"?" row-moment":"");
+    row.dataset.i=i;
     row.innerHTML='<div class="row-label">'+it.n+'</div><div class="row-track"></div>';
     var track=row.lastChild, el;
     if(it.k==="moment"){
@@ -540,7 +549,6 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
       el.style.left=pct(ms(it.s))+"%";
     }
     track.appendChild(el);
-    row.addEventListener("click",function(){ select(i); });
     rowsEl.appendChild(row);
     return {row:row,el:el,it:it,s:pct(ms(it.s)),e:pct(it.e?ms(it.e):NOW),dead:!!it.e&&it.k!=="moment"};
   });
@@ -575,34 +583,52 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
 
   /* detail panel */
   var sel=-1;
+  function fmt(d){ var p=d.split("-"); return MON[+p[1]-1]+" "+p[0]; }
+  function entryHTML(it){
+    var when=fmt(it.s)+(it.k==="moment"?"":" to "+(it.e?fmt(it.e):"now"));
+    var h='<article class="entry"><div class="detail-meta"><b>'+it.n+'</b>'+when+'</div><div class="detail-body">';
+    h+='<h3>'+it.t+'</h3>';
+    it.d.forEach(function(p){ h+='<p>'+p+'</p>'; });
+    if(it.c) h+='<p class="cause">'+it.c+'</p>';
+    if(it.st){ h+='<ul class="stack">'+it.st.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>'; }
+    return h+'</div></article>';
+  }
+  function showAll(){
+    if(sel>=0) built[sel].row.classList.remove("hit");
+    sel=-1;
+    detEl.innerHTML=ITEMS.map(entryHTML).join("");
+  }
   function select(i){
     if(sel>=0) built[sel].row.classList.remove("hit");
     sel=i; built[i].row.classList.add("hit");
-    var it=ITEMS[i];
-    var when=fmt(it.s)+(it.k==="moment"?"":" to "+(it.e?fmt(it.e):"now"));
-    var html='<div class="detail-meta"><b>'+it.n+'</b>'+when+'</div><div class="detail-body">';
-    html+='<h3>'+it.t+'</h3>';
-    it.d.forEach(function(p){ html+='<p>'+p+'</p>'; });
-    if(it.c) html+='<p class="cause">'+it.c+'</p>';
-    if(it.st){ html+='<ul class="stack">'+it.st.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>'; }
-    detEl.innerHTML=html+'</div>';
+    detEl.innerHTML='<p class="backlink"><button type="button" class="showall">All '+ITEMS.length+' entries</button></p>'+entryHTML(ITEMS[i]);
   }
-  function fmt(d){ var p=d.split("-"); return MON[+p[1]-1]+" "+p[0]; }
+  detEl.addEventListener("click",function(e){
+    if(e.target.classList.contains("showall")) showAll();
+  });
 
-  /* drag */
-  var dragging=false;
+  /* drag to scrub, click to open a row */
+  var dragging=false, startX=0, moved=false;
   function posFromX(x){
     var r=chart.getBoundingClientRect(), g=getGut();
     return Math.max(0,Math.min(100,(x-r.left-g)/(r.width-g)*100));
   }
   chart.addEventListener("pointerdown",function(e){
-    dragging=true; chart.setPointerCapture(e.pointerId); stop(); render(posFromX(e.clientX));
+    dragging=true; moved=false; startX=e.clientX; stop();
   });
-  chart.addEventListener("pointermove",function(e){
-    if(dragging) render(posFromX(e.clientX));
+  window.addEventListener("pointermove",function(e){
+    if(!dragging) return;
+    if(!moved&&Math.abs(e.clientX-startX)>4) moved=true;
+    if(moved){ e.preventDefault(); render(posFromX(e.clientX)); }
   });
-  chart.addEventListener("pointerup",function(){ dragging=false; });
-  chart.addEventListener("pointercancel",function(){ dragging=false; });
+  window.addEventListener("pointerup",function(e){
+    if(!dragging) return;
+    dragging=false;
+    if(moved) return;
+    var row=e.target&&e.target.closest?e.target.closest(".row"):null;
+    if(row&&row.dataset.i!==undefined) select(+row.dataset.i);
+  });
+  window.addEventListener("pointercancel",function(){ dragging=false; });
   chart.addEventListener("keydown",function(e){
     var cur=parseFloat(chart.getAttribute("aria-valuenow"))||0, step=e.shiftKey?10:2;
     if(e.key==="ArrowRight"){ stop(); render(Math.min(100,cur+step)); e.preventDefault(); }
@@ -624,7 +650,7 @@ footer{margin-top:56px;border-top:1px solid var(--ink);padding:30px 0 76px}
   }
 
   render(0);
-  select(8);
+  showAll();
 
   var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(reduce){ render(pct(NOW)); }
