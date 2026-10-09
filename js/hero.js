@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js';
 
 const V3 = THREE.Vector3, { lerp, clamp } = THREE.MathUtils, D2R = Math.PI / 180;
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -130,7 +129,22 @@ const SMIRK = [[-10, -35.5], [-5, -37.6], [1, -38], [7, -36.6], [11.5, -33.6]];
 const MOLES = [[13, -9, 1.8], [-13, -10, 1.4], [-44, -8, 1.4], [-38, -31, 1.4]];
 const g2 = (th, ph, t0, p0, st, sp) => { const u = (th - t0) * Math.cos(p0 * D2R) / st, v = (ph - p0) / sp; return Math.exp(-u * u - v * v); };
 
-export function mountHero(canvas, host) {
+/* a plain lit room for soft reflections, built here so nothing else has to be downloaded */
+function softRoom() {
+  const room = new THREE.Scene();
+  room.add(new THREE.Mesh(new THREE.BoxGeometry(12, 12, 12), new THREE.MeshBasicMaterial({ color: 0xc3cad1, side: THREE.BackSide })));
+  const panel = (hex, power, x, y, z, w, h) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(power), side: THREE.DoubleSide, toneMapped: false }));
+    m.position.set(x, y, z); m.lookAt(0, 0, 0); room.add(m);
+  };
+  panel(0xffffff, 7, 0, 5.8, 0, 7, 7);
+  panel(0xfff0dc, 4, -5.8, 1.5, 2, 5, 6);
+  panel(0xdfeaff, 3, 5.8, 1, -2, 4, 5);
+  panel(0xffffff, 2, 0, 1, 5.8, 6, 4);
+  return room;
+}
+
+export function mountHero(canvas, host, hooks = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
@@ -138,8 +152,13 @@ export function mountHero(canvas, host) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
   const scene = new THREE.Scene();
-  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.42;
+  let active = true;
+  let failed = false, ready = false;
+  const fail = why => { if (failed) return; failed = true; active = false; console.warn('3D bust stopped:', why); hooks.onFail && hooks.onFail(why); };
+  renderer.debug.onShaderError = (gl, program) => { console.error('shader failed', gl.getProgramInfoLog(program)); fail('shader'); };
+  canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); fail('context lost'); });
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(softRoom(), 0.04).texture;
+  scene.environmentIntensity = 0.5;
   const FOV = 28, camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 80);
 
   scene.add(new THREE.HemisphereLight(0xdcefff, 0x9fb7c9, 0.75));
@@ -334,7 +353,7 @@ export function mountHero(canvas, host) {
   /* ---------- grabbing ---------- */
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), mouse = new THREE.Vector2();
   const plane = new THREE.Plane(), hitW = new V3(), tmp = new V3(), qInv = new THREE.Quaternion(), ZERO = new V3();
-  let grab = null, active = true, pointerId = null;
+  let grab = null, pointerId = null;
   const toNdc = (cx, cy) => { const r = canvas.getBoundingClientRect(); return ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height * 2 - 1)); };
   const hitAt = (cx, cy) => { ray.setFromCamera(toNdc(cx, cy), camera); return ray.intersectObjects(pickables, false)[0]; };
   host.addEventListener('touchstart', e => { if (e.touches.length === 1 && hitAt(e.touches[0].clientX, e.touches[0].clientY)) e.preventDefault(); }, { passive: false });
@@ -418,17 +437,18 @@ export function mountHero(canvas, host) {
     const dt = Math.min(clock.getDelta(), 1 / 30);
     step(dt, clock.elapsedTime);
     renderer.render(scene, camera);
+    if (!ready && !failed) { ready = true; hooks.onReady && hooks.onReady(); }
     raf = requestAnimationFrame(frame);
   }
   frame();
 
   return {
-    setActive(on) { active = on; if (on && !raf) { clock.getDelta(); frame(); } },
+    setActive(on) { if (failed) return; active = on; if (on && !raf) { clock.getDelta(); frame(); } },
     wearHat() { for (const m of hatMeshes) m.visible = true; hatOn = true; hatY = 2.4; hatV = 0; },
     get hatOn() { return hatOn; },
-    snapshot(size = 512) {
+    snapshot(size = 512, lookY = 0.16, dist = 6.1) {
       const prev = renderer.getSize(new THREE.Vector2()), pr = renderer.getPixelRatio(), cam2 = camera.clone();
-      cam2.aspect = 1; cam2.position.set(0, 0.16, 6.1); cam2.lookAt(0, 0.16, 0); cam2.updateProjectionMatrix();
+      cam2.aspect = 1; cam2.position.set(0, lookY, dist); cam2.lookAt(0, lookY, 0); cam2.updateProjectionMatrix();
       renderer.setPixelRatio(1); renderer.setSize(size, size, false); renderer.render(scene, cam2);
       const url = canvas.toDataURL('image/png');
       renderer.setPixelRatio(pr); renderer.setSize(prev.x, prev.y, false); renderer.render(scene, camera);

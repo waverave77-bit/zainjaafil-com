@@ -1,7 +1,14 @@
-const V = '3';   /* bump on every deploy so browsers fetch the new files */
+const V = '4';   /* bump on every deploy so browsers fetch the new files */
 const $ = (s, el = document) => el.querySelector(s);
 const fmt = n => Math.round(n).toLocaleString('en-US');
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+/* older browsers do not have rounded rectangles on the canvas, and the games draw with them */
+if (window.CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    r = Math.min(typeof r === 'number' ? r : 0, w / 2, h / 2);
+    this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r); this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r); this.arcTo(x, y, x + w, y, r); this.closePath();
+  };
+}
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (_) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} }
@@ -59,13 +66,24 @@ for (const c of document.querySelectorAll('.cloud')) c.addEventListener('click',
 /* ---------- the bust ---------- */
 let hero = null;
 const mug = () => { if (hero) try { $('#mug').src = hero.snapshot(480); } catch (_) {} };
-import(`./hero.js?v=${V}`).then(({ mountHero }) => {
-  hero = mountHero($('#bust'), $('#top'));
-  new IntersectionObserver(es => hero.setActive(es[0].isIntersecting), { threshold: 0.02 }).observe($('#top'));
+/* The still picture is what everyone sees first. The live 3D bust replaces it only after it has actually drawn a frame.
+   If 3D is missing, blocked or breaks, the picture simply stays. */
+function still(why) {
+  console.warn('showing the still picture instead of the 3D bust:', why);
+  hero = null; window.__hero = null;
+  $('#top').classList.remove('live'); $('#bust').hidden = true;
+  $('#cue').innerHTML = 'Scroll down. <b>Play the games.</b>';
+}
+if (/[?&]nobust\b/.test(location.search)) still('turned off in the address');
+else import(`./hero.js?v=${V}`).then(({ mountHero }) => {
+  hero = mountHero($('#bust'), $('#top'), {
+    onReady() { $('#top').classList.add('live'); setTimeout(mug, 400); },
+    onFail: still
+  });
+  new IntersectionObserver(es => hero && hero.setActive(es[0].isIntersecting), { threshold: 0.02 }).observe($('#top'));
   if (store.get('zj.hat', false)) { hero.wearHat(); $('#hatline').textContent = 'Scroll up. It fits.'; $('#hat').style.visibility = 'hidden'; }
-  setTimeout(mug, 900);
   window.__hero = hero;
-}).catch(err => { console.error('bust failed to load', err); $('#bust').hidden = true; });
+}).catch(still);
 
 /* ---------- props ---------- */
 const seen = new Map();
